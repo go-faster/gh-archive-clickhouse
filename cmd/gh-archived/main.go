@@ -220,6 +220,7 @@ func main() {
 		if err != nil {
 			return errors.Wrap(err, "failed to create counter")
 		}
+		fetchedCount.Add(ctx, 0) // init
 		missCount, err := meter.SyncInt64().Counter("fetch_miss_total")
 		if err != nil {
 			return errors.Wrap(err, "failed to create counter")
