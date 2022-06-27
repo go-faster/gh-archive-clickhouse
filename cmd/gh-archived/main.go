@@ -11,6 +11,8 @@ import (
 	"github.com/ClickHouse/ch-go/proto"
 	"github.com/go-faster/errors"
 	"github.com/mergestat/timediff"
+	"go.opentelemetry.io/otel/metric/instrument/asyncfloat64"
+	"go.opentelemetry.io/otel/metric/instrument/syncint64"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
@@ -24,6 +26,10 @@ type Service struct {
 	token          string
 	lg             *zap.Logger
 	batches        chan []gh.Event
+
+	fetchedCount syncint64.Counter
+	missCount    syncint64.Counter
+	targetRate   asyncfloat64.Gauge
 }
 
 func (c *Service) Send(ctx context.Context) error {
@@ -128,6 +134,7 @@ Fetch:
 			}
 			if res.Unprocessable {
 				lg.Warn("Unable to resolve missing events")
+				c.missCount.Add(ctx, 1)
 				break
 			}
 
@@ -159,6 +166,7 @@ Fetch:
 			return ctx.Err()
 		case c.batches <- newEvents:
 			// Insert events in background.
+			c.fetchedCount.Add(ctx, int64(len(newEvents)))
 		}
 
 		// Calculating next sleep time to avoid rate limit.
@@ -169,6 +177,7 @@ Fetch:
 		} else {
 			targetRate = time.Until(rt.Reset) / time.Duration(rt.Remaining)
 		}
+		c.targetRate.Observe(ctx, targetRate.Seconds())
 		duration := time.Since(start)
 		sleep := targetRate - duration
 		if sleep <= 0 {
@@ -204,12 +213,32 @@ func main() {
 		if err != nil {
 			return errors.Wrap(err, "failed to create metrics")
 		}
+
+		// Initializing metrics.
+		meter := m.MeterProvider().Meter("")
+		fetchedCount, err := meter.SyncInt64().Counter("events_fetched_count_total")
+		if err != nil {
+			return errors.Wrap(err, "failed to create counter")
+		}
+		missCount, err := meter.SyncInt64().Counter("fetch_miss_total")
+		if err != nil {
+			return errors.Wrap(err, "failed to create counter")
+		}
+		targetRate, err := meter.AsyncFloat64().Gauge("fetch_target_rate_seconds")
+		if err != nil {
+			return errors.Wrap(err, "failed to create gauge")
+		}
+
 		s := &Service{
 			batches:        make(chan []gh.Event, 5),
 			lg:             lg,
 			clickHouseAddr: os.Getenv("CLICKHOUSE_ADDR"),
 			token:          os.Getenv("GITHUB_TOKEN"),
 			clickHouseDB:   "faster",
+
+			missCount:    missCount,
+			fetchedCount: fetchedCount,
+			targetRate:   targetRate,
 		}
 		g.Go(func() error {
 			return s.Poll(ctx)
