@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: faster
+  name: gh-archived
+  labels:
+    app: gh-archived
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gh-archived
+  template:
+    metadata:
+      labels:
+        app: gh-archived
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8090'
+    spec:
+      volumes:
+        - name: cache
+          emptyDir: {}
+      containers:
+        - name: gh-archived
+          image: ghcr.io/go-faster/gh-archive-clickhouse:main
+          resources:
+            requests:
+              cpu: 500m
+              memory: 256M
+            limits:
+              cpu: "2"
+              memory: 512M
+          env:
+            - name: HOME
+              value: /cache
+            - name: HTTP_ADDR
+              value: 0.0.0.0:8080
+            - name: METRICS_ADDR
+              value: 0.0.0.0:8090
+            - name: CLICKHOUSE_ADDR
+              value: db.mcs.local:9000
+            - name: TG_NOTIFY_GROUP
+              value: go_faster_news
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gh-archived
+                  key: GITHUB_TOKEN
+          volumeMounts:
+            - mountPath: /cache
+              name: cache
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: faster
+  name: gh-archived
+  labels:
+    app: gh-archived
+    prometheus: "true"
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8090
+      name: metrics
+  selector:
+    app: gh-archived
