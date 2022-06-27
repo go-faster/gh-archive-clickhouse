@@ -97,13 +97,13 @@ jobs:
         id: "kubectl"
         uses: andstor/file-existence-action@v1
         with:
-          files: /usr/bin/local/kubectl
+          files: /usr/local/bin/kubectl
 
       - name: Download kubectl
         if: steps.kubectl.outputs.files_exists != 'true'
         run: |
-          wget -O /usr/bin/local/kubectl "https://dl.k8s.io/release/${{ env.KUBECTL_VER }}/bin/linux/amd64/kubectl"
-          chmod +x /usr/bin/local/kubectl
+          wget -O /usr/local/bin/kubectl "https://dl.k8s.io/release/${{ env.KUBECTL_VER }}/bin/linux/amd64/kubectl"
+          chmod +x /usr/local/bin/kubectl
 
       - name: Setup kubeconfig
         env:
