@@ -90,7 +90,7 @@ jobs:
       - name: Set up kubectl cache
         uses: actions/cache@v3
         with:
-          path: /usr/bin/local/kubectl
+          path: /usr/local/bin/kubectl
           key: kubectl-${{ env.KUBECTL_VER }}
 
       - name: Check kubectl
