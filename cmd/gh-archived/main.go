@@ -12,6 +12,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/mergestat/timediff"
 	"go.opentelemetry.io/otel/metric/instrument/asyncfloat64"
+	"go.opentelemetry.io/otel/metric/instrument/asyncint64"
 	"go.opentelemetry.io/otel/metric/instrument/syncint64"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -30,6 +31,10 @@ type Service struct {
 	fetchedCount syncint64.Counter
 	missCount    syncint64.Counter
 	targetRate   asyncfloat64.Gauge
+
+	rateLimitRemaining asyncint64.Gauge
+	rateLimitUsed      asyncint64.Gauge
+	rateLimitReset     asyncfloat64.Gauge
 }
 
 func (c *Service) Send(ctx context.Context) error {
@@ -140,6 +145,9 @@ Fetch:
 
 			// Updating rate-limit to sleep later.
 			rt = res.RateLimit
+			c.rateLimitRemaining.Observe(ctx, int64(rt.Remaining))
+			c.rateLimitUsed.Observe(ctx, int64(rt.Used))
+			c.rateLimitReset.Observe(ctx, time.Until(rt.Reset).Seconds())
 
 			// Searching for new events.
 			// The currentMet contains events from previous Fetch loop.
@@ -231,6 +239,19 @@ func main() {
 			return errors.Wrap(err, "failed to create gauge")
 		}
 
+		rateLimitRemaining, err := meter.AsyncInt64().Gauge("github_rate_limit_remaining")
+		if err != nil {
+			return errors.Wrap(err, "failed to create gauge")
+		}
+		rateLimitUsed, err := meter.AsyncInt64().Gauge("github_rate_limit_used")
+		if err != nil {
+			return errors.Wrap(err, "failed to create gauge")
+		}
+		rateLimitReset, err := meter.AsyncFloat64().Gauge("github_rate_limit_reset_seconds")
+		if err != nil {
+			return errors.Wrap(err, "failed to create gauge")
+		}
+
 		s := &Service{
 			batches:        make(chan []gh.Event, 5),
 			lg:             lg,
@@ -241,6 +262,10 @@ func main() {
 			missCount:    missCount,
 			fetchedCount: fetchedCount,
 			targetRate:   targetRate,
+
+			rateLimitRemaining: rateLimitRemaining,
+			rateLimitUsed:      rateLimitUsed,
+			rateLimitReset:     rateLimitReset,
 		}
 		g.Go(func() error {
 			return s.Poll(ctx)
