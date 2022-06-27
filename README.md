@@ -1,5 +1,5 @@
 # gh-archive-clickhouse
-Save public github event stream to ClickHouse as raw json.
+Save public GitHub event stream to ClickHouse as json.
 
 * [List public events](https://docs.github.com/en/rest/activity/events#list-public-events) GitHub endpoint
 * Original [GitHub Archive](https://github.com/igrigorik/gharchive.org) project
