@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"sort"
 	"time"
 
 	"github.com/ClickHouse/ch-go"
@@ -154,14 +153,6 @@ Fetch:
 			}
 			// All events are new, fetching next page.
 		}
-		sort.SliceStable(newEvents, func(i, j int) bool {
-			a, b := newEvents[i], newEvents[j]
-			// Sort ascending by created_at, id.
-			if a.CreatedAt.Equal(b.CreatedAt) {
-				return a.ID < b.ID
-			}
-			return a.CreatedAt.Before(b.CreatedAt)
-		})
 
 		select {
 		case <-ctx.Done():
