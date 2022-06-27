@@ -41,8 +41,6 @@ spec:
               value: 0.0.0.0:8090
             - name: CLICKHOUSE_ADDR
               value: db.mcs.local:9000
-            - name: TG_NOTIFY_GROUP
-              value: go_faster_news
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
