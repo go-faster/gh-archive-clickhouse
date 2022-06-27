@@ -1,6 +1,10 @@
 # gh-archive-clickhouse
 Save public github event stream to ClickHouse as raw json.
 
+* [List public events](https://docs.github.com/en/rest/activity/events#list-public-events) GitHub endpoint
+* Original [GitHub Archive](https://github.com/igrigorik/gharchive.org) project
+* [ClickHouse](https://clickhouse.tech/) OLAP database
+
 ```sql
 CREATE TABLE github_events_raw
 (
