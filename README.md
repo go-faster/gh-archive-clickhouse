@@ -1,5 +1,5 @@
 # gh-archive-clickhouse
-Save public github event stream to ClickHouse as raw json
+Save public github event stream to ClickHouse as raw json.
 
 ```sql
 CREATE TABLE github_events_raw
@@ -11,3 +11,11 @@ CREATE TABLE github_events_raw
       PARTITION BY toYYYYMMDD(ts)
       ORDER BY (ts, id);
 ```
+
+Alternative to [gharchive crawler](https://github.com/igrigorik/gharchive.org/tree/master/crawler) with
+decreased probability to miss events.
+
+* Streaming to ClickHouse via native protocol instead of using files, so storage and fethching are decoupled.
+* Automatic pagination if more than one page of new events is available
+* Automatic fetch rate adjustment based on rate limit github headers and request duration
+* ETag support to skip cached results
