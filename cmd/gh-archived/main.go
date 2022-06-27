@@ -225,6 +225,7 @@ func main() {
 		if err != nil {
 			return errors.Wrap(err, "failed to create counter")
 		}
+		missCount.Add(ctx, 0) // init
 		targetRate, err := meter.AsyncFloat64().Gauge("fetch_target_rate_seconds")
 		if err != nil {
 			return errors.Wrap(err, "failed to create gauge")
