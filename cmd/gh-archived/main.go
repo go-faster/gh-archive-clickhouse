@@ -53,7 +53,6 @@ func (c *Service) Send(ctx context.Context) error {
 		// Restart stream every softTimeout to force merges.
 		softTimeout := time.Now().Add(time.Minute)
 
-		// See table.go for the schema.
 		var (
 			colID  proto.ColInt64    // id Int64
 			colTs  proto.ColDateTime // ts DateTime
