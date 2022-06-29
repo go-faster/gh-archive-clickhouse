@@ -6,6 +6,7 @@ require (
 	github.com/ClickHouse/ch-go v0.45.0
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v0.38.0
+	github.com/klauspost/compress v1.15.6
 	github.com/mergestat/timediff v0.0.3
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.12.2
@@ -32,7 +33,6 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/go-version v1.5.0 // indirect
-	github.com/klauspost/compress v1.15.6 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/pascaldekloe/name v1.0.1 // indirect
