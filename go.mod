@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/ClickHouse/ch-go v0.45.0
+	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v0.38.0
 	github.com/klauspost/compress v1.15.6
