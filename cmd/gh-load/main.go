@@ -148,16 +148,17 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 	return nil
 }
 
-func run(ctx context.Context, lg *zap.Logger) error {
+func run(ctx context.Context) error {
 	var arg struct {
-		From  string
-		To    string
-		Jobs  int
-		Host  string
-		Port  int
-		DB    string
-		Table string
-		Buf   int
+		From     string
+		To       string
+		Jobs     int
+		Host     string
+		Port     int
+		DB       string
+		Table    string
+		Buf      int
+		LogLevel string
 	}
 	flag.StringVar(&arg.From, "from", "2022-03-14T21", "start from")
 	flag.StringVar(&arg.To, "to", "2022-04-14T21", "end with")
@@ -167,7 +168,18 @@ func run(ctx context.Context, lg *zap.Logger) error {
 	flag.IntVar(&arg.Port, "port", 9000, "port")
 	flag.StringVar(&arg.DB, "db", "", "db")
 	flag.StringVar(&arg.Table, "table", "github_events_raw", "table")
+	flag.StringVar(&arg.LogLevel, "log", "info", "log level (debug, info, warn, error, panic, fatal)")
 	flag.Parse()
+
+	cfg := zap.NewDevelopmentConfig()
+	if err := cfg.Level.UnmarshalText([]byte(arg.LogLevel)); err != nil {
+		return errors.Wrap(err, "log level")
+	}
+	cfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	lg, err := cfg.Build()
+	if err != nil {
+		return errors.Wrap(err, "build logger config")
+	}
 
 	start, err := time.Parse("2006-01-02T15", arg.From)
 	if err != nil {
@@ -234,13 +246,8 @@ func run(ctx context.Context, lg *zap.Logger) error {
 
 func main() {
 	ctx := context.Background()
-	cfg := zap.NewDevelopmentConfig()
-	cfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	lg, err := cfg.Build()
-	if err != nil {
-		panic(err)
-	}
-	if err := run(ctx, lg); err != nil {
+
+	if err := run(ctx); err != nil {
 		panic(err)
 	}
 }
