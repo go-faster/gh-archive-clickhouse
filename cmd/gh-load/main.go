@@ -165,7 +165,7 @@ func run(ctx context.Context, lg *zap.Logger) error {
 	flag.IntVar(&arg.Buf, "b", 1024*1024*100, "max token bytes")
 	flag.StringVar(&arg.Host, "host", "localhost", "host")
 	flag.IntVar(&arg.Port, "port", 9000, "port")
-	flag.StringVar(&arg.DB, "db", "faster", "db")
+	flag.StringVar(&arg.DB, "db", "", "db")
 	flag.StringVar(&arg.Table, "table", "github_events_raw", "table")
 	flag.Parse()
 
