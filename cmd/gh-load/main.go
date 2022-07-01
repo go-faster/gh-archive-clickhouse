@@ -6,9 +6,10 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
-	"os"
+	"strconv"
 	"time"
 
 	"github.com/ClickHouse/ch-go"
@@ -24,10 +25,14 @@ import (
 )
 
 type Application struct {
-	lg            *zap.Logger
-	tasks         chan time.Time
-	list          bool
-	maxTokenBytes int
+	lg    *zap.Logger
+	tasks chan time.Time
+	list  bool
+	buf   int
+
+	addr  string
+	db    string
+	table string
 }
 
 func (a *Application) Process(ctx context.Context, t time.Time) error {
@@ -69,9 +74,9 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 	}
 
 	db, err := ch.Dial(ctx, ch.Options{
-		Database: "faster",
+		Database: a.db,
 		Logger:   lg,
-		Address:  os.Getenv("CLICKHOUSE_ADDR"),
+		Address:  a.addr,
 	})
 	if err != nil {
 		return errors.Wrap(err, "dial")
@@ -81,7 +86,7 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 	}()
 
 	s := bufio.NewScanner(r)
-	buf := make([]byte, a.maxTokenBytes)
+	buf := make([]byte, a.buf)
 	s.Buffer(buf, cap(buf))
 
 	var (
@@ -93,7 +98,7 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 		perBatch = 10_000
 	)
 	if err := db.Do(ctx, ch.Query{
-		Body: "INSERT INTO github_events_raw VALUES",
+		Body: fmt.Sprintf("INSERT INTO %s VALUES", a.table),
 		Input: proto.Input{
 			{Name: "id", Data: &colID},
 			{Name: "ts", Data: &colTs},
@@ -145,16 +150,23 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 
 func run(ctx context.Context, lg *zap.Logger) error {
 	var arg struct {
-		From string
-		To   string
-		Jobs int
-
-		MaxTokenBytes int
+		From  string
+		To    string
+		Jobs  int
+		Host  string
+		Port  int
+		DB    string
+		Table string
+		Buf   int
 	}
 	flag.StringVar(&arg.From, "from", "2022-03-14T21", "start from")
 	flag.StringVar(&arg.To, "to", "2022-04-14T21", "end with")
 	flag.IntVar(&arg.Jobs, "jobs", 1, "jobs")
-	flag.IntVar(&arg.MaxTokenBytes, "b", 1024*1024*100, "max token bytes")
+	flag.IntVar(&arg.Buf, "b", 1024*1024*100, "max token bytes")
+	flag.StringVar(&arg.Host, "host", "localhost", "host")
+	flag.IntVar(&arg.Port, "port", 9000, "port")
+	flag.StringVar(&arg.DB, "db", "faster", "db")
+	flag.StringVar(&arg.Table, "table", "github_events_raw", "table")
 	flag.Parse()
 
 	start, err := time.Parse("2006-01-02T15", arg.From)
@@ -168,10 +180,19 @@ func run(ctx context.Context, lg *zap.Logger) error {
 
 	g, ctx := errgroup.WithContext(ctx)
 	a := &Application{
-		lg:            lg,
-		tasks:         make(chan time.Time, arg.Jobs),
-		maxTokenBytes: arg.MaxTokenBytes,
+		lg:    lg,
+		tasks: make(chan time.Time, arg.Jobs),
+		buf:   arg.Buf,
+		addr:  net.JoinHostPort(arg.Host, strconv.Itoa(arg.Port)),
+		db:    arg.DB,
+		table: arg.Table,
 	}
+	lg.Info("Start",
+		zap.String("from", arg.From), zap.String("to", arg.To),
+		zap.String("addr", a.addr),
+		zap.String("db", a.db),
+		zap.String("table", a.table),
+	)
 	for i := 0; i < arg.Jobs; i++ {
 		g.Go(func() error {
 			for {
