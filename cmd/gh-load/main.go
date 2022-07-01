@@ -213,6 +213,7 @@ func run(ctx context.Context, lg *zap.Logger) error {
 		})
 	}
 	g.Go(func() error {
+		defer close(a.tasks)
 		for t := start; t.Before(end); t = t.Add(time.Hour) {
 			select {
 			case a.tasks <- t:
