@@ -73,7 +73,7 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 		lg.Error("Not found", zap.String("key", key))
 		return nil
 	default:
-		return errors.Errorf("unexpected status code: %d", resp.StatusCode)
+		return errors.Errorf("GET %s: %s", req.URL, resp.Status)
 	}
 
 	r, err := gzip.NewReader(resp.Body)
@@ -235,7 +235,10 @@ func run(ctx context.Context) error {
 		g.Go(func() error {
 			for {
 				select {
-				case t := <-a.tasks:
+				case t, ok := <-a.tasks:
+					if !ok {
+						return nil
+					}
 					b := backoff.NewExponentialBackOff()
 					b.MaxInterval = arg.Backoff.MaxInterval
 					b.MaxElapsedTime = arg.Backoff.MaxElapsedTime
