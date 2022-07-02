@@ -231,8 +231,10 @@ func run(ctx context.Context) error {
 		zap.String("db", a.db),
 		zap.String("table", a.table),
 	)
+	done := make(chan struct{})
 	for i := 0; i < arg.Jobs; i++ {
 		g.Go(func() error {
+			defer close(done)
 			for {
 				select {
 				case t, ok := <-a.tasks:
@@ -283,6 +285,8 @@ func run(ctx context.Context) error {
 				)
 				lastBytes = curBytes
 				lastRows = curRows
+			case <-done:
+				return nil
 			case <-ctx.Done():
 				return ctx.Err()
 			}
