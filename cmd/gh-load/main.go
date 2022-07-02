@@ -15,8 +15,10 @@ import (
 	"github.com/ClickHouse/ch-go"
 	"github.com/ClickHouse/ch-go/proto"
 	"github.com/cenkalti/backoff/v4"
+	"github.com/dustin/go-humanize"
 	"github.com/go-faster/errors"
 	"github.com/klauspost/compress/gzip"
+	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
@@ -25,18 +27,24 @@ import (
 )
 
 type Application struct {
-	lg    *zap.Logger
-	tasks chan time.Time
-	list  bool
-	buf   int
+	lg        *zap.Logger
+	tasks     chan time.Time
+	list      bool
+	buf       int
+	batchSize int
 
 	addr  string
 	db    string
 	table string
+
+	bytesSent atomic.Uint64
+	rowsSent  atomic.Uint64
+	lastKey   atomic.String
 }
 
 func (a *Application) Process(ctx context.Context, t time.Time) error {
 	// https://data.gharchive.org/2015-01-01-15.json.gz
+	start := time.Now()
 	key := fmt.Sprintf("%d-%02d-%02d-%d", t.Year(), t.Month(), t.Day(), t.Hour())
 	lg := a.lg.With(zap.String("key", key))
 	u := &url.URL{
@@ -57,7 +65,7 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 	}()
 	switch resp.StatusCode {
 	case 200:
-		lg.Info("Found", zap.String("key", key))
+		lg.Debug("Found", zap.String("key", key))
 		if a.list {
 			return nil
 		}
@@ -94,9 +102,6 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 		colTs  proto.ColDateTime // ts DateTime
 		colRaw proto.ColBytes    // raw String
 	)
-	const (
-		perBatch = 10_000
-	)
 	if err := db.Do(ctx, ch.Query{
 		Body: fmt.Sprintf("INSERT INTO %s VALUES", a.table),
 		Input: proto.Input{
@@ -105,7 +110,10 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 			{Name: "raw", Data: &colRaw},
 		},
 		OnProfile: func(ctx context.Context, p proto.Profile) error {
-			lg.Info("Profile", zap.Int("rows", int(p.Rows)), zap.Int("bytes", int(p.Bytes)))
+			lg.Info("Profile",
+				zap.Int("rows", int(p.Rows)),
+				zap.Int("bytes", int(p.Bytes)),
+			)
 			return nil
 		},
 		OnInput: func(ctx context.Context) error {
@@ -128,7 +136,10 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 				colTs.Append(e.CreatedAt)
 				colRaw.Append(e.Raw)
 
-				if colID.Rows() > perBatch {
+				a.bytesSent.Add(uint64(len(e.Raw)))
+				a.rowsSent.Add(1)
+
+				if colID.Rows() > a.batchSize {
 					// New batch.
 					return nil
 				}
@@ -143,32 +154,46 @@ func (a *Application) Process(ctx context.Context, t time.Time) error {
 		return errors.Wrap(err, "do")
 	}
 
-	lg.Info("Done")
+	a.lastKey.Store(key)
+	lg.Debug("Done",
+		zap.Duration("duration", time.Since(start)),
+	)
 
 	return nil
 }
 
 func run(ctx context.Context) error {
 	var arg struct {
-		From     string
-		To       string
-		Jobs     int
-		Host     string
-		Port     int
-		DB       string
-		Table    string
-		Buf      int
-		LogLevel string
+		From      string
+		To        string
+		Jobs      int
+		Host      string
+		Port      int
+		DB        string
+		Table     string
+		Buf       int
+		BatchSize int
+		LogLevel  string
+		Backoff   backoff.ExponentialBackOff
 	}
-	flag.StringVar(&arg.From, "from", "2022-03-14T21", "start from")
-	flag.StringVar(&arg.To, "to", "2022-04-14T21", "end with")
+
+	flag.StringVar(&arg.From, "from", "2015-01-01T00", "start from time (uses Events API format from 2015)")
+	flag.StringVar(&arg.To, "to", time.Now().Add(-time.Hour*1).UTC().Format("2006-01-02T15"), "end time (current time minus 1 hour by default)")
 	flag.IntVar(&arg.Jobs, "jobs", 1, "jobs")
-	flag.IntVar(&arg.Buf, "b", 1024*1024*100, "max token bytes")
+	flag.IntVar(&arg.Buf, "b", 1024*1024*100, "maximum line size in bytes, will be buffered in memory for each job")
 	flag.StringVar(&arg.Host, "host", "localhost", "host")
 	flag.IntVar(&arg.Port, "port", 9000, "port")
 	flag.StringVar(&arg.DB, "db", "", "db")
 	flag.StringVar(&arg.Table, "table", "github_events_raw", "table")
 	flag.StringVar(&arg.LogLevel, "log", "info", "log level (debug, info, warn, error, panic, fatal)")
+	flag.IntVar(&arg.BatchSize, "batch-size", 10_000, "events in single batch per job")
+
+	flag.DurationVar(&arg.Backoff.MaxInterval, "backoff.max-interval", backoff.DefaultMaxInterval, "backoff max interval")
+	flag.DurationVar(&arg.Backoff.MaxElapsedTime, "backoff.max-elapsed-time", backoff.DefaultMaxElapsedTime, "backoff max elapsed time")
+	flag.DurationVar(&arg.Backoff.InitialInterval, "backoff.initial-interval", backoff.DefaultInitialInterval, "backoff initial interval")
+	flag.Float64Var(&arg.Backoff.Multiplier, "backoff.multiplier", backoff.DefaultMultiplier, "backoff multiplier")
+	flag.Float64Var(&arg.Backoff.RandomizationFactor, "backoff.randomization-factor", backoff.DefaultRandomizationFactor, "backoff randomization factor")
+
 	flag.Parse()
 
 	cfg := zap.NewDevelopmentConfig()
@@ -192,12 +217,13 @@ func run(ctx context.Context) error {
 
 	g, ctx := errgroup.WithContext(ctx)
 	a := &Application{
-		lg:    lg,
-		tasks: make(chan time.Time, arg.Jobs),
-		buf:   arg.Buf,
-		addr:  net.JoinHostPort(arg.Host, strconv.Itoa(arg.Port)),
-		db:    arg.DB,
-		table: arg.Table,
+		lg:        lg,
+		tasks:     make(chan time.Time, arg.Jobs),
+		buf:       arg.Buf,
+		batchSize: arg.BatchSize,
+		addr:      net.JoinHostPort(arg.Host, strconv.Itoa(arg.Port)),
+		db:        arg.DB,
+		table:     arg.Table,
 	}
 	lg.Info("Start",
 		zap.String("from", arg.From), zap.String("to", arg.To),
@@ -210,7 +236,13 @@ func run(ctx context.Context) error {
 			for {
 				select {
 				case t := <-a.tasks:
-					b := backoff.NewConstantBackOff(time.Second)
+					b := backoff.NewExponentialBackOff()
+					b.MaxInterval = arg.Backoff.MaxInterval
+					b.MaxElapsedTime = arg.Backoff.MaxElapsedTime
+					b.InitialInterval = arg.Backoff.InitialInterval
+					b.Multiplier = arg.Backoff.Multiplier
+					b.RandomizationFactor = arg.Backoff.RandomizationFactor
+
 					if err := backoff.Retry(func() error {
 						return a.Process(ctx, t)
 					},
@@ -224,6 +256,35 @@ func run(ctx context.Context) error {
 			}
 		})
 	}
+	g.Go(func() error {
+		rate := time.Second * 3
+		ticker := time.NewTicker(rate)
+		var (
+			lastBytes uint64
+			lastRows  uint64
+		)
+		for {
+			select {
+			case <-ticker.C:
+				var (
+					curBytes = a.bytesSent.Load()
+					curRows  = a.rowsSent.Load()
+				)
+				lg.Info("Running",
+					zap.String("latest_key", a.lastKey.Load()),
+					zap.Uint64("bytes_sent", curBytes),
+					zap.String("bytes_sent_human", humanize.Bytes(curBytes)),
+					zap.String("bytes_rate", humanize.Bytes(uint64(float64(curBytes-lastBytes)/rate.Seconds()))+"/s"),
+					zap.Uint64("rows_sent", curRows),
+					zap.String("rows_rate", humanize.Comma(int64(float64(curRows-lastRows)/rate.Seconds()))+"/s"),
+				)
+				lastBytes = curBytes
+				lastRows = curRows
+			case <-ctx.Done():
+				return ctx.Err()
+			}
+		}
+	})
 	g.Go(func() error {
 		defer close(a.tasks)
 		for t := start; t.Before(end); t = t.Add(time.Hour) {
