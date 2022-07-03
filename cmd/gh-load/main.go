@@ -225,11 +225,13 @@ func run(ctx context.Context) error {
 		db:        arg.DB,
 		table:     arg.Table,
 	}
+	startedAt := time.Now()
 	lg.Info("Start",
 		zap.String("from", arg.From), zap.String("to", arg.To),
 		zap.String("addr", a.addr),
 		zap.String("db", a.db),
 		zap.String("table", a.table),
+		zap.String("host", arg.Host),
 	)
 	done := make(chan struct{})
 	for i := 0; i < arg.Jobs; i++ {
@@ -292,11 +294,13 @@ func run(ctx context.Context) error {
 			}
 		}
 	})
+	var jobs atomic.Uint64
 	g.Go(func() error {
 		defer close(a.tasks)
 		for t := start; t.Before(end); t = t.Add(time.Hour) {
 			select {
 			case a.tasks <- t:
+				jobs.Inc()
 				continue
 			case <-ctx.Done():
 				return ctx.Err()
@@ -308,6 +312,16 @@ func run(ctx context.Context) error {
 	if err := g.Wait(); err != nil {
 		return errors.Wrap(err, "wait")
 	}
+
+	lg.Info("Data loaded",
+		zap.Duration("duration", time.Since(startedAt)),
+		zap.String("from", arg.From), zap.String("to", arg.To),
+		zap.String("addr", a.addr),
+		zap.String("db", a.db),
+		zap.String("table", a.table),
+		zap.Int("jobs", arg.Jobs),
+		zap.Uint64("total_keys", jobs.Load()),
+	)
 
 	return nil
 }
