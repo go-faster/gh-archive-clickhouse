@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/ClickHouse/ch-go"
@@ -234,9 +235,12 @@ func run(ctx context.Context) error {
 		zap.String("host", arg.Host),
 	)
 	done := make(chan struct{})
+	var doneOnce sync.Once
 	for i := 0; i < arg.Jobs; i++ {
 		g.Go(func() error {
-			defer close(done)
+			defer doneOnce.Do(func() {
+				close(done)
+			})
 			for {
 				select {
 				case t, ok := <-a.tasks:
