@@ -3,7 +3,7 @@ module github.com/go-faster/gh-archive-clickhouse
 go 1.18
 
 require (
-	github.com/ClickHouse/ch-go v0.45.0
+	github.com/ClickHouse/ch-go v0.46.0
 	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
@@ -35,7 +35,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/hashicorp/go-version v1.5.0 // indirect
+	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/pascaldekloe/name v1.0.1 // indirect
