@@ -3,7 +3,7 @@ module github.com/go-faster/gh-archive-clickhouse
 go 1.18
 
 require (
-	github.com/ClickHouse/ch-go v0.46.2
+	github.com/ClickHouse/ch-go v0.46.3
 	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
