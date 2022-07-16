@@ -7,8 +7,8 @@ require (
 	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
-	github.com/go-faster/jx v0.38.0
-	github.com/klauspost/compress v1.15.7
+	github.com/go-faster/jx v0.38.1
+	github.com/klauspost/compress v1.15.8
 	github.com/mergestat/timediff v0.0.3
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.12.2
