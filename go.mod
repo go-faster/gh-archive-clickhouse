@@ -3,7 +3,7 @@ module github.com/go-faster/gh-archive-clickhouse
 go 1.18
 
 require (
-	github.com/ClickHouse/ch-go v0.47.3
+	github.com/ClickHouse/ch-go v0.48.0
 	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
@@ -21,7 +21,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v0.31.0
 	go.opentelemetry.io/otel/trace v1.10.0
 	go.uber.org/atomic v1.10.0
-	go.uber.org/zap v1.22.0
+	go.uber.org/zap v1.23.0
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 )
 
@@ -29,7 +29,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/dmarkham/enumer v1.5.5 // indirect
+	github.com/dmarkham/enumer v1.5.6 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -39,7 +39,7 @@ require (
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/pascaldekloe/name v1.0.1 // indirect
-	github.com/pierrec/lz4/v4 v4.1.15 // indirect
+	github.com/pierrec/lz4/v4 v4.1.16 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
