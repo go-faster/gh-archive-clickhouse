@@ -8,7 +8,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v0.39.0
-	github.com/klauspost/compress v1.15.9
+	github.com/klauspost/compress v1.15.12
 	github.com/mergestat/timediff v0.0.3
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.13.0
