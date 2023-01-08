@@ -12,14 +12,14 @@ require (
 	github.com/mergestat/timediff v0.0.3
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.13.0
-	github.com/stretchr/testify v1.8.0
-	go.opentelemetry.io/otel v1.10.0
+	github.com/stretchr/testify v1.8.1
+	go.opentelemetry.io/otel v1.11.2
 	go.opentelemetry.io/otel/exporters/jaeger v1.10.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.31.0
-	go.opentelemetry.io/otel/metric v0.31.0
+	go.opentelemetry.io/otel/metric v0.34.0
 	go.opentelemetry.io/otel/sdk v1.10.0
 	go.opentelemetry.io/otel/sdk/metric v0.31.0
-	go.opentelemetry.io/otel/trace v1.10.0
+	go.opentelemetry.io/otel/trace v1.11.2
 	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.22.0
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
