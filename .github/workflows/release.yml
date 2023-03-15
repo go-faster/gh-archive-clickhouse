@@ -6,7 +6,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  KUBECTL_VER: v1.22.4
+  KUBECTL_VER: v1.26.2
   K8S_NS: faster
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.18.3
+          go-version: 1.20.x
 
       - name: Get Go environment
         id: go-env
