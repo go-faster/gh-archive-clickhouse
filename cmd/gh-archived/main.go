@@ -11,14 +11,16 @@ import (
 	"github.com/ClickHouse/ch-go/proto"
 	"github.com/go-faster/errors"
 	"github.com/mergestat/timediff"
-	"go.opentelemetry.io/otel/metric/instrument/asyncfloat64"
-	"go.opentelemetry.io/otel/metric/instrument/asyncint64"
-	"go.opentelemetry.io/otel/metric/instrument/syncint64"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/metric/instrument"
+	semconv "go.opentelemetry.io/otel/semconv/v1.18.0"
+	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
 	"github.com/go-faster/gh-archive-clickhouse/internal/app"
 	"github.com/go-faster/gh-archive-clickhouse/internal/gh"
+	"github.com/go-faster/gh-archive-clickhouse/internal/otelenv"
 )
 
 type Service struct {
@@ -28,13 +30,13 @@ type Service struct {
 	lg             *zap.Logger
 	batches        chan []gh.Event
 
-	fetchedCount syncint64.Counter
-	missCount    syncint64.Counter
-	targetRate   asyncfloat64.Gauge
+	fetchedCount instrument.Int64Counter
+	missCount    instrument.Int64Counter
 
-	rateLimitRemaining asyncint64.Gauge
-	rateLimitUsed      asyncint64.Gauge
-	rateLimitReset     asyncfloat64.Gauge
+	rateLimitRemaining atomic.Int64
+	rateLimitUsed      atomic.Int64
+	rateLimitReset     atomic.Float64
+	targetRate         atomic.Float64
 }
 
 func (c *Service) Send(ctx context.Context) error {
@@ -144,9 +146,9 @@ Fetch:
 
 			// Updating rate-limit to sleep later.
 			rt = res.RateLimit
-			c.rateLimitRemaining.Observe(ctx, int64(rt.Remaining))
-			c.rateLimitUsed.Observe(ctx, int64(rt.Used))
-			c.rateLimitReset.Observe(ctx, time.Until(rt.Reset).Seconds())
+			c.rateLimitRemaining.Store(int64(rt.Remaining))
+			c.rateLimitUsed.Store(int64(rt.Used))
+			c.rateLimitReset.Store(time.Until(rt.Reset).Seconds())
 
 			// Searching for new events.
 			// The currentMet contains events from previous Fetch loop.
@@ -177,14 +179,15 @@ Fetch:
 		}
 
 		// Calculating next sleep time to avoid rate limit.
+		now := time.Now()
 		var targetRate time.Duration
 		if rt.Remaining < 10 {
 			lg.Warn("Rate limit", zap.Int("remaining", rt.Remaining))
-			targetRate = rt.Reset.Sub(time.Now()) + time.Second
+			targetRate = rt.Reset.Sub(now) + time.Second
 		} else {
 			targetRate = time.Until(rt.Reset) / time.Duration(rt.Remaining)
 		}
-		c.targetRate.Observe(ctx, targetRate.Seconds())
+		c.targetRate.Store(targetRate.Seconds())
 		duration := time.Since(start)
 		sleep := targetRate - duration
 		if sleep <= 0 {
@@ -195,7 +198,7 @@ Fetch:
 			zap.Int("new_count", len(newEvents)),
 			zap.Int("remaining", rt.Remaining),
 			zap.Int("used", rt.Used),
-			zap.Duration("reset", rt.Reset.Sub(time.Now())),
+			zap.Duration("reset", rt.Reset.Sub(now)),
 			zap.String("reset_human", timediff.TimeDiff(rt.Reset)),
 			zap.Duration("sleep", sleep),
 			zap.Duration("target_rate", targetRate),
@@ -210,43 +213,41 @@ Fetch:
 }
 
 func main() {
-	app.Run(func(ctx context.Context, lg *zap.Logger) error {
+	if err := os.Setenv("OTEL_RESOURCE_ATTRIBUTES", otelenv.Value(
+		semconv.ServiceNameKey.String("gh-archived"),
+		semconv.ServiceNamespaceKey.String("faster"),
+	)); err != nil {
+		panic(err)
+	}
+	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Metrics) error {
 		g, ctx := errgroup.WithContext(ctx)
-		m, err := app.NewMetrics(lg, app.Config{
-			Name:      "gh-archived",
-			Namespace: "faster",
-			Addr:      os.Getenv("METRICS_ADDR"),
-		})
-		if err != nil {
-			return errors.Wrap(err, "failed to create metrics")
-		}
 
 		// Initializing metrics.
 		meter := m.MeterProvider().Meter("")
-		fetchedCount, err := meter.SyncInt64().Counter("events_fetched_count_total")
+		fetchedCount, err := meter.Int64Counter("events_fetched_count")
 		if err != nil {
 			return errors.Wrap(err, "failed to create counter")
 		}
 		fetchedCount.Add(ctx, 0) // init
-		missCount, err := meter.SyncInt64().Counter("fetch_miss_total")
+		missCount, err := meter.Int64Counter("fetch_miss_")
 		if err != nil {
 			return errors.Wrap(err, "failed to create counter")
 		}
 		missCount.Add(ctx, 0) // init
-		targetRate, err := meter.AsyncFloat64().Gauge("fetch_target_rate_seconds")
+		targetRate, err := meter.Float64ObservableGauge("fetch_target_rate_seconds")
 		if err != nil {
 			return errors.Wrap(err, "failed to create gauge")
 		}
 
-		rateLimitRemaining, err := meter.AsyncInt64().Gauge("github_rate_limit_remaining")
+		rateLimitRemaining, err := meter.Int64ObservableGauge("github_rate_limit_remaining")
 		if err != nil {
 			return errors.Wrap(err, "failed to create gauge")
 		}
-		rateLimitUsed, err := meter.AsyncInt64().Gauge("github_rate_limit_used")
+		rateLimitUsed, err := meter.Int64ObservableGauge("github_rate_limit_used")
 		if err != nil {
 			return errors.Wrap(err, "failed to create gauge")
 		}
-		rateLimitReset, err := meter.AsyncFloat64().Gauge("github_rate_limit_reset_seconds")
+		rateLimitReset, err := meter.Float64ObservableGauge("github_rate_limit_reset_seconds")
 		if err != nil {
 			return errors.Wrap(err, "failed to create gauge")
 		}
@@ -260,24 +261,23 @@ func main() {
 
 			missCount:    missCount,
 			fetchedCount: fetchedCount,
-			targetRate:   targetRate,
-
-			rateLimitRemaining: rateLimitRemaining,
-			rateLimitUsed:      rateLimitUsed,
-			rateLimitReset:     rateLimitReset,
 		}
+
+		if _, err := meter.RegisterCallback(func(ctx context.Context, observer metric.Observer) error {
+			observer.ObserveInt64(rateLimitRemaining, s.rateLimitRemaining.Load())
+			observer.ObserveInt64(rateLimitUsed, s.rateLimitUsed.Load())
+			observer.ObserveFloat64(rateLimitReset, s.rateLimitReset.Load())
+			observer.ObserveFloat64(targetRate, s.targetRate.Load())
+			return nil
+		}, rateLimitRemaining, rateLimitUsed, rateLimitReset, targetRate); err != nil {
+			return errors.Wrap(err, "failed to register callback")
+		}
+
 		g.Go(func() error {
 			return s.Poll(ctx)
 		})
 		g.Go(func() error {
 			return s.Send(ctx)
-		})
-		g.Go(func() error {
-			<-ctx.Done()
-			return m.Shutdown(context.Background())
-		})
-		g.Go(func() error {
-			return m.Run(ctx)
 		})
 		return g.Wait()
 	})
