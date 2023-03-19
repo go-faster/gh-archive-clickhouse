@@ -14,7 +14,7 @@ require (
 	github.com/stretchr/testify v1.8.2
 	go.opentelemetry.io/contrib/propagators/jaeger v1.15.0
 	go.opentelemetry.io/otel v1.14.0
-	go.opentelemetry.io/otel/exporters/jaeger v1.10.0
+	go.opentelemetry.io/otel/exporters/jaeger v1.14.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.37.0
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.37.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.14.0
