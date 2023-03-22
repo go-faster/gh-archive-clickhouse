@@ -105,7 +105,7 @@ jobs:
 
       - name: Setup kubeconfig
         env:
-          KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG }}
+          KUBE: ${{ secrets.KUBE }}
         run: .k8s/kubeconfig.sh
 
       - name: Deploy

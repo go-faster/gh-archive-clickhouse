@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo "${KUBECONFIG_BASE64}" | base64 -d > "${KUBECONFIG}"
+echo "${KUBE}" | base64 -d > "${KUBECONFIG}"

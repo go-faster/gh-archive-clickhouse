@@ -27,10 +27,10 @@ spec:
           image: ghcr.io/go-faster/gh-archive-clickhouse:main
           resources:
             requests:
-              cpu: 500m
+              cpu: 250m
               memory: 256M
             limits:
-              cpu: "2"
+              cpu: "1"
               memory: 512M
           env:
             - name: HOME
