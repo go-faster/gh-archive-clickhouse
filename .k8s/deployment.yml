@@ -32,6 +32,13 @@ spec:
             limits:
               cpu: "1"
               memory: 512M
+          ports:
+            - containerPort: 8090
+              protocol: TCP
+              name: metrics
+            - containerPort: 8080
+              protocol: TCP
+              name: http
           env:
             - name: HOME
               value: /cache
@@ -40,7 +47,7 @@ spec:
             - name: METRICS_ADDR
               value: 0.0.0.0:8090
             - name: CLICKHOUSE_ADDR
-              value: db.mcs.local:9000
+              value: chendpoint-db.clickhouse.svc.cluster.local:9000
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
