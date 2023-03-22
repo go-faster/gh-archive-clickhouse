@@ -48,7 +48,6 @@ func (c *Service) Send(ctx context.Context) error {
 			Database: c.clickHouseDB,
 			Address:  c.clickHouseAddr,
 			User:     os.Getenv("CLICKHOUSE_USER"),
-			Password: os.Getenv("CLICKHOUSE_PASSWORD"),
 		})
 		if err != nil {
 			return errors.Wrap(err, "dial")
