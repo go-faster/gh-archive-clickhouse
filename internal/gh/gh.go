@@ -4,8 +4,10 @@ package gh
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-faster/errors"
@@ -17,14 +19,24 @@ type HTTPClient interface {
 }
 
 type Client struct {
-	http  HTTPClient
-	token string
+	http   HTTPClient
+	rand   *rand.Rand
+	tokens []string
 }
 
 func NewClient(http HTTPClient, tok string) *Client {
+	var tokens []string
+	for _, v := range strings.Split(tok, ",") {
+		v = strings.TrimSpace(v)
+		if v == "" {
+			continue
+		}
+		tokens = append(tokens, v)
+	}
 	return &Client{
-		http:  http,
-		token: tok,
+		http:   http,
+		tokens: tokens,
+		rand:   rand.New(rand.NewSource(time.Now().Unix())),
 	}
 }
 
@@ -117,8 +129,8 @@ func (c *Client) Events(ctx context.Context, p Params) (*Result[[]Event], error)
 	if err != nil {
 		return nil, err
 	}
-	if c.token != "" {
-		req.Header.Add("Authorization", "token "+c.token)
+	if len(c.tokens) > 0 {
+		req.Header.Add("Authorization", "token "+c.tokens[c.rand.Intn(len(c.tokens))])
 	}
 	if p.Etag != "" {
 		req.Header.Add("If-None-Match", p.Etag)
