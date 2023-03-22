@@ -48,6 +48,7 @@ func (c *Service) Send(ctx context.Context) error {
 			Database: c.clickHouseDB,
 			Address:  c.clickHouseAddr,
 			User:     os.Getenv("CLICKHOUSE_USER"),
+			Password: os.Getenv("CLICKHOUSE_PASSWORD"),
 		})
 		if err != nil {
 			return errors.Wrap(err, "dial")
@@ -257,8 +258,9 @@ func main() {
 			batches:        make(chan []gh.Event, 5),
 			lg:             lg,
 			clickHouseAddr: os.Getenv("CLICKHOUSE_ADDR"),
-			token:          os.Getenv("GITHUB_TOKEN"),
 			clickHouseDB:   "faster",
+
+			token: os.Getenv("GITHUB_TOKEN"),
 
 			missCount:    missCount,
 			fetchedCount: fetchedCount,
