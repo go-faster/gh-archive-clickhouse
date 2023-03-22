@@ -48,6 +48,16 @@ spec:
               value: 0.0.0.0:8090
             - name: CLICKHOUSE_ADDR
               value: chendpoint-db.clickhouse.svc.cluster.local:9000
+            - name: CLICKHOUSE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gh-archived
+                  key: CLICKHOUSE_USER
+            - name: CLICKHOUSE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gh-archived
+                  key: CLICKHOUSE_PASSWORD
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
