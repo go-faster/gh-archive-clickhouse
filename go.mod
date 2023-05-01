@@ -18,9 +18,9 @@ require (
 	go.opentelemetry.io/otel/exporters/prometheus v0.37.0
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.37.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.14.0
-	go.opentelemetry.io/otel/metric v0.37.0
+	go.opentelemetry.io/otel/metric v0.38.0
 	go.opentelemetry.io/otel/sdk v1.15.0
-	go.opentelemetry.io/otel/sdk/metric v0.37.0
+	go.opentelemetry.io/otel/sdk/metric v0.38.0
 	go.opentelemetry.io/otel/trace v1.15.0
 	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.24.0
