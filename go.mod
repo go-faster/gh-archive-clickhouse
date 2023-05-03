@@ -15,10 +15,10 @@ require (
 	github.com/stretchr/testify v1.8.2
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.41.0
 	go.opentelemetry.io/contrib/propagators/autoprop v0.41.0
-	go.opentelemetry.io/otel v1.15.0
+	go.opentelemetry.io/otel v1.15.1
 	go.opentelemetry.io/otel/metric v0.38.0
 	go.opentelemetry.io/otel/sdk v1.15.0
-	go.opentelemetry.io/otel/trace v1.15.0
+	go.opentelemetry.io/otel/trace v1.15.1
 	go.uber.org/atomic v1.10.0
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.24.0
