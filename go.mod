@@ -13,7 +13,7 @@ require (
 	github.com/mergestat/timediff v0.0.3
 	github.com/prometheus/client_golang v1.15.0
 	github.com/stretchr/testify v1.8.2
-	go.opentelemetry.io/contrib/instrumentation/runtime v0.41.0
+	go.opentelemetry.io/contrib/instrumentation/runtime v0.41.1
 	go.opentelemetry.io/contrib/propagators/autoprop v0.41.0
 	go.opentelemetry.io/otel v1.15.1
 	go.opentelemetry.io/otel/metric v0.38.1
