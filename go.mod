@@ -11,7 +11,7 @@ require (
 	github.com/go-faster/sdk v0.5.0
 	github.com/klauspost/compress v1.16.5
 	github.com/mergestat/timediff v0.0.3
-	github.com/prometheus/client_golang v1.15.0
+	github.com/prometheus/client_golang v1.15.1
 	github.com/stretchr/testify v1.8.2
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.41.1
 	go.opentelemetry.io/contrib/propagators/autoprop v0.41.1
