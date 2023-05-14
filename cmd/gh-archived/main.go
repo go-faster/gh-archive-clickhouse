@@ -10,6 +10,7 @@ import (
 	"github.com/ClickHouse/ch-go"
 	"github.com/ClickHouse/ch-go/proto"
 	"github.com/go-faster/errors"
+	"github.com/go-faster/sdk/app"
 	"github.com/mergestat/timediff"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/metric/instrument"
@@ -18,7 +19,6 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/go-faster/gh-archive-clickhouse/internal/app"
 	"github.com/go-faster/gh-archive-clickhouse/internal/gh"
 	"github.com/go-faster/gh-archive-clickhouse/internal/otelenv"
 )

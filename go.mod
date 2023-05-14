@@ -8,7 +8,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.0.0
-	github.com/go-faster/sdk v0.5.0
+	github.com/go-faster/sdk v0.6.0
 	github.com/klauspost/compress v1.16.5
 	github.com/mergestat/timediff v0.0.3
 	github.com/prometheus/client_golang v1.15.1
@@ -34,6 +34,7 @@ require (
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/go-logr/zapr v1.2.4 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 // indirect
