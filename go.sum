@@ -81,8 +81,6 @@ github.com/go-faster/errors v0.6.1 h1:nNIPOBkprlKzkThvS/0YaX8Zs9KewLCOSFQS5BU06F
 github.com/go-faster/errors v0.6.1/go.mod h1:5MGV2/2T9yvlrbhe9pD9LO5Z/2zCSq2T8j+Jpi2LAyY=
 github.com/go-faster/jx v1.0.0 h1:HE+ms2e6ZGkZ6u13t8u+onBinrPvIPI+0hWXGELm74g=
 github.com/go-faster/jx v1.0.0/go.mod h1:zm8SlkwK+H0TYNKYtVJ/7cWFS7soJBQWhcPctKyYL/4=
-github.com/go-faster/sdk v0.5.0 h1:eCXvnkfSMync4ZbMOMRQiqadmxBar0lUCSJGbfpzYdA=
-github.com/go-faster/sdk v0.5.0/go.mod h1:h+oQYCw9bfsATUqZjziH+eZvgTRtSnFyGiaOklJxDyQ=
 github.com/go-faster/sdk v0.6.0 h1:twkY/cnxytcFgwFCVdZ2gZGPRFRNVkLm2OVld+yJOdY=
 github.com/go-faster/sdk v0.6.0/go.mod h1:q6YKqt971IXESKbU/AudNP6AAEbm5cmNSTzZRvOOLFM=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
@@ -180,8 +178,8 @@ github.com/pascaldekloe/name v1.0.1 h1:9lnXOHeqeHHnWLbKfH6X98+4+ETVqFqxN09UXSjcM
 github.com/pascaldekloe/name v1.0.1/go.mod h1:Z//MfYJnH4jVpQ9wkclwu2I2MkHmXTlT9wR5UZScttM=
 github.com/pierrec/lz4/v4 v4.1.17 h1:kV4Ip+/hUBC+8T6+2EgburRtkE9ef4nbY3f4dFhGjMc=
 github.com/pierrec/lz4/v4 v4.1.17/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
-github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=

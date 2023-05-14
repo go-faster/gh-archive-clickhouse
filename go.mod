@@ -11,16 +11,11 @@ require (
 	github.com/go-faster/sdk v0.6.0
 	github.com/klauspost/compress v1.16.5
 	github.com/mergestat/timediff v0.0.3
-	github.com/prometheus/client_golang v1.15.1
 	github.com/stretchr/testify v1.8.2
-	go.opentelemetry.io/contrib/instrumentation/runtime v0.41.1
-	go.opentelemetry.io/contrib/propagators/autoprop v0.41.1
 	go.opentelemetry.io/otel v1.15.1
 	go.opentelemetry.io/otel/metric v0.38.1
-	go.opentelemetry.io/otel/sdk v1.15.1
 	go.opentelemetry.io/otel/trace v1.15.1
 	go.uber.org/atomic v1.11.0
-	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/sync v0.2.0
 )
@@ -43,10 +38,13 @@ require (
 	github.com/pascaldekloe/name v1.0.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/prometheus/client_golang v1.15.1 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/runtime v0.41.1 // indirect
+	go.opentelemetry.io/contrib/propagators/autoprop v0.41.1 // indirect
 	go.opentelemetry.io/contrib/propagators/aws v1.16.1 // indirect
 	go.opentelemetry.io/contrib/propagators/b3 v1.16.1 // indirect
 	go.opentelemetry.io/contrib/propagators/jaeger v1.16.1 // indirect
@@ -62,8 +60,10 @@ require (
 	go.opentelemetry.io/otel/exporters/prometheus v0.38.1 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.38.1 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.15.1 // indirect
+	go.opentelemetry.io/otel/sdk v1.15.1 // indirect
 	go.opentelemetry.io/otel/sdk/metric v0.38.1 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
+	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20230206171751-46f607a40771 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
