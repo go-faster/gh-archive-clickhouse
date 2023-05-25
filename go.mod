@@ -3,7 +3,7 @@ module github.com/go-faster/gh-archive-clickhouse
 go 1.19
 
 require (
-	github.com/ClickHouse/ch-go v0.55.0
+	github.com/ClickHouse/ch-go v0.56.0
 	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.6.1
@@ -12,9 +12,9 @@ require (
 	github.com/klauspost/compress v1.16.5
 	github.com/mergestat/timediff v0.0.3
 	github.com/stretchr/testify v1.8.3
-	go.opentelemetry.io/otel v1.15.1
-	go.opentelemetry.io/otel/metric v0.38.1
-	go.opentelemetry.io/otel/trace v1.15.1
+	go.opentelemetry.io/otel v1.16.0
+	go.opentelemetry.io/otel/metric v1.16.0
+	go.opentelemetry.io/otel/trace v1.16.0
 	go.uber.org/atomic v1.11.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/sync v0.2.0
@@ -60,14 +60,14 @@ require (
 	go.opentelemetry.io/otel/exporters/prometheus v0.38.1 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.38.1 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.15.1 // indirect
-	go.opentelemetry.io/otel/sdk v1.15.1 // indirect
+	go.opentelemetry.io/otel/sdk v1.16.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v0.38.1 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20230206171751-46f607a40771 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/tools v0.8.0 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
