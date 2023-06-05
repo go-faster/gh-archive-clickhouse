@@ -13,7 +13,6 @@ import (
 	"github.com/go-faster/sdk/app"
 	"github.com/mergestat/timediff"
 	"go.opentelemetry.io/otel/metric"
-	"go.opentelemetry.io/otel/metric/instrument"
 	semconv "go.opentelemetry.io/otel/semconv/v1.18.0"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
@@ -30,8 +29,8 @@ type Service struct {
 	lg             *zap.Logger
 	batches        chan []gh.Event
 
-	fetchedCount instrument.Int64Counter
-	missCount    instrument.Int64Counter
+	fetchedCount metric.Int64Counter
+	missCount    metric.Int64Counter
 
 	rateLimitRemaining atomic.Int64
 	rateLimitUsed      atomic.Int64
