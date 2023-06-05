@@ -11,7 +11,7 @@ require (
 	github.com/go-faster/sdk v0.6.0
 	github.com/klauspost/compress v1.16.5
 	github.com/mergestat/timediff v0.0.3
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	go.opentelemetry.io/otel v1.15.1
 	go.opentelemetry.io/otel/metric v0.38.1
 	go.opentelemetry.io/otel/trace v1.15.1
