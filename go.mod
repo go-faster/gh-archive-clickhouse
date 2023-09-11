@@ -8,7 +8,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.1.0
-	github.com/go-faster/sdk v0.9.1
+	github.com/go-faster/sdk v0.9.2
 	github.com/klauspost/compress v1.16.7
 	github.com/mergestat/timediff v0.0.3
 	github.com/stretchr/testify v1.8.4
@@ -43,19 +43,17 @@ require (
 	github.com/prometheus/procfs v0.10.1 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.43.0 // indirect
-	go.opentelemetry.io/contrib/propagators/autoprop v0.42.0 // indirect
-	go.opentelemetry.io/contrib/propagators/aws v1.17.0 // indirect
-	go.opentelemetry.io/contrib/propagators/b3 v1.17.0 // indirect
-	go.opentelemetry.io/contrib/propagators/jaeger v1.17.0 // indirect
-	go.opentelemetry.io/contrib/propagators/ot v1.17.0 // indirect
-	go.opentelemetry.io/otel/exporters/jaeger v1.16.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.17.0 // indirect
+	go.opentelemetry.io/contrib/propagators/autoprop v0.43.0 // indirect
+	go.opentelemetry.io/contrib/propagators/aws v1.18.0 // indirect
+	go.opentelemetry.io/contrib/propagators/b3 v1.18.0 // indirect
+	go.opentelemetry.io/contrib/propagators/jaeger v1.18.0 // indirect
+	go.opentelemetry.io/contrib/propagators/ot v1.18.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric v0.40.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v0.40.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp v0.40.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.16.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.16.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.16.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.17.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.17.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.17.0 // indirect
 	go.opentelemetry.io/otel/exporters/prometheus v0.40.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.40.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.17.0 // indirect
