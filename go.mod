@@ -6,7 +6,7 @@ require (
 	github.com/ClickHouse/ch-go v0.58.2
 	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/dustin/go-humanize v1.0.1
-	github.com/go-faster/errors v0.6.1
+	github.com/go-faster/errors v0.7.0
 	github.com/go-faster/jx v1.1.0
 	github.com/go-faster/sdk v0.9.2
 	github.com/klauspost/compress v1.17.2
