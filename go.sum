@@ -18,8 +18,8 @@ github.com/go-faster/errors v0.7.0 h1:UnD/xusnfUgtEYkgRZohqL2AfmPTwv13NAJwwFFaNY
 github.com/go-faster/errors v0.7.0/go.mod h1:5ySTjWFiphBs07IKuiL69nxdfd5+fzh1u7FPGZP2quo=
 github.com/go-faster/jx v1.1.0 h1:ZsW3wD+snOdmTDy9eIVgQdjUpXRRV4rqW8NS3t+20bg=
 github.com/go-faster/jx v1.1.0/go.mod h1:vKDNikrKoyUmpzaJ0OkIkRQClNHFX/nF3dnTJZb3skg=
-github.com/go-faster/sdk v0.10.0 h1:PF7VOGIsuypxmulqLjPzZ9juJcBCg1neiKMp9ckC4Bs=
-github.com/go-faster/sdk v0.10.0/go.mod h1:7Wz1vkjMri9tTovOBzHiSOVyr4yBi2fpGpTCV2b2DCY=
+github.com/go-faster/sdk v0.10.1 h1:5Er4bVMLQB2ZoA7CmOqIggu687dKS3UKm/3WWedyn2Q=
+github.com/go-faster/sdk v0.10.1/go.mod h1:7Wz1vkjMri9tTovOBzHiSOVyr4yBi2fpGpTCV2b2DCY=
 github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
 github.com/go-logr/logr v1.3.0 h1:2y3SDp0ZXuc6/cjLSZ+Q3ir+QB9T/iG5yYRXqsagWSY=
 github.com/go-logr/logr v1.3.0/go.mod h1:9T104GzyrTigFIr8wt5mBrctHMim0Nb2HLGrmQ40KvY=
