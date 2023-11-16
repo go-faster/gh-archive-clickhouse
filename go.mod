@@ -9,7 +9,7 @@ require (
 	github.com/go-faster/errors v0.7.0
 	github.com/go-faster/jx v1.1.0
 	github.com/go-faster/sdk v0.10.2
-	github.com/klauspost/compress v1.17.2
+	github.com/klauspost/compress v1.17.3
 	github.com/mergestat/timediff v0.0.3
 	github.com/stretchr/testify v1.8.4
 	go.opentelemetry.io/otel v1.20.0
