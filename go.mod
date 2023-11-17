@@ -12,9 +12,9 @@ require (
 	github.com/klauspost/compress v1.17.3
 	github.com/mergestat/timediff v0.0.3
 	github.com/stretchr/testify v1.8.4
-	go.opentelemetry.io/otel v1.20.0
-	go.opentelemetry.io/otel/metric v1.20.0
-	go.opentelemetry.io/otel/trace v1.20.0
+	go.opentelemetry.io/otel v1.21.0
+	go.opentelemetry.io/otel/metric v1.21.0
+	go.opentelemetry.io/otel/trace v1.21.0
 	go.uber.org/atomic v1.11.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/sync v0.5.0
