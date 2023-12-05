@@ -3,6 +3,8 @@ name: x
 on:
   push:
     branches: [main]
+  pull_request:
+  workflow_dispatch:
 
 # Common Go workflows from go faster
 # See https://github.com/go-faster/x
