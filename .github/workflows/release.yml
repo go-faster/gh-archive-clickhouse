@@ -38,7 +38,7 @@ jobs:
           echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
 
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.cache }}
@@ -89,7 +89,7 @@ jobs:
         run: sed 's/:main/:sha-${{ steps.var.outputs.sha }}/g' .k8s/deployment.yml > .k8s/deployment.release.yml
 
       - name: Set up kubectl cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /usr/local/bin/kubectl
           key: kubectl-${{ env.KUBECTL_VER }}
