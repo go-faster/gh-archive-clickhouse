@@ -5,13 +5,13 @@ go 1.21
 toolchain go1.21.0
 
 require (
-	github.com/ClickHouse/ch-go v0.61.5
+	github.com/ClickHouse/ch-go v0.62.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
 	github.com/go-faster/sdk v0.13.0
-	github.com/klauspost/compress v1.17.8
+	github.com/klauspost/compress v1.17.9
 	github.com/mergestat/timediff v0.0.3
 	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/otel v1.24.0
