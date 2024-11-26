@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  KUBECTL_VER: v1.27.1
+  KUBECTL_VER: v1.29.7
   K8S_NS: faster
 
 jobs:
