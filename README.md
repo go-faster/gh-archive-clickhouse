@@ -19,9 +19,9 @@ CREATE TABLE github_events_raw
 Alternative to [gharchive crawler](https://github.com/igrigorik/gharchive.org/tree/master/crawler) with
 decreased probability to miss events.
 
-* Streaming to ClickHouse via native protocol instead of using files, so storage and fethching are decoupled.
+* Streaming to ClickHouse via native protocol instead of using files, so storage and fetching are decoupled.
 * Automatic pagination if more than one page of new events is available
-* Automatic fetch rate adjustment based on rate limit github headers and request duration
+* Automatic fetch rate adjustment based on rate limit GitHub headers and request duration
 * ETag support to skip cached results
 
 ## gh-load
