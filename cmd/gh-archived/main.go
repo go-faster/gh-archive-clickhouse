@@ -220,7 +220,7 @@ func main() {
 	)); err != nil {
 		panic(err)
 	}
-	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Metrics) error {
+	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Telemetry) error {
 		g, ctx := errgroup.WithContext(ctx)
 
 		// Initializing metrics.
