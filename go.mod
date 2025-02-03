@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.3
 
 require (
-	github.com/ClickHouse/ch-go v0.64.0
+	github.com/ClickHouse/ch-go v0.64.1
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.7.1
