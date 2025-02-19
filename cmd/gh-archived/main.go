@@ -13,13 +13,11 @@ import (
 	"github.com/go-faster/sdk/app"
 	"github.com/mergestat/timediff"
 	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.18.0"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
 	"github.com/go-faster/gh-archive-clickhouse/internal/gh"
-	"github.com/go-faster/gh-archive-clickhouse/internal/otelenv"
 )
 
 type Service struct {
@@ -214,12 +212,6 @@ Fetch:
 }
 
 func main() {
-	if err := os.Setenv("OTEL_RESOURCE_ATTRIBUTES", otelenv.Value(
-		semconv.ServiceNameKey.String("gh-archived"),
-		semconv.ServiceNamespaceKey.String("faster"),
-	)); err != nil {
-		panic(err)
-	}
 	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Telemetry) error {
 		g, ctx := errgroup.WithContext(ctx)
 
@@ -282,5 +274,8 @@ func main() {
 			return s.Send(ctx)
 		})
 		return g.Wait()
-	})
+	},
+		app.WithServiceName("gh-archived"),
+		app.WithServiceNamespace("faster"),
+	)
 }
