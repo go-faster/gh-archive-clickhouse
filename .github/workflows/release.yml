@@ -103,8 +103,8 @@ jobs:
       - name: Download kubectl
         if: steps.kubectl.outputs.files_exists != 'true'
         run: |
-          wget -O /usr/local/bin/kubectl "https://dl.k8s.io/release/${{ env.KUBECTL_VER }}/bin/linux/amd64/kubectl"
-          chmod +x /usr/local/bin/kubectl
+          wget -O /tmp/kubectl "https://dl.k8s.io/release/${{ env.KUBECTL_VERSION }}/bin/linux/amd64/kubectl"
+          chmod +x /tmp/kubectl
 
       - name: Setup kubeconfig
         env:
@@ -113,5 +113,5 @@ jobs:
 
       - name: Deploy
         run: |
-          kubectl apply -f .k8s/deployment.release.yml
-          kubectl -n ${{ env.K8S_NS }} rollout status deployment/gh-archived --timeout=1m
+          /tmp/kubectl apply -f .k8s/deployment.release.yml
+          /tmp/kubectl -n ${{ env.K8S_NS }} rollout status deployment/gh-archived --timeout=1m
