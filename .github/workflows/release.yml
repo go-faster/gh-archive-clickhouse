@@ -98,7 +98,7 @@ jobs:
         id: "kubectl"
         uses: andstor/file-existence-action@v3
         with:
-          files: /usr/local/bin/kubectl
+          files: /tmp/kubectl
 
       - name: Download kubectl
         if: steps.kubectl.outputs.files_exists != 'true'
