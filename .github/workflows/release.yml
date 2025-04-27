@@ -114,4 +114,4 @@ jobs:
       - name: Deploy
         run: |
           kubectl apply -f .k8s/deployment.release.yml
-          kubectl -n ${{ env.K8S_NS }} rollout status deployment/gh-archived
+          kubectl -n ${{ env.K8S_NS }} rollout status deployment/gh-archived --timeout=1m
