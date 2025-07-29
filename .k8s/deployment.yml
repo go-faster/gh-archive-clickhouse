@@ -27,7 +27,7 @@ spec:
           image: ghcr.io/go-faster/gh-archive-clickhouse:main
           resources:
             requests:
-              cpu: 250m
+              cpu: 50m
               memory: 256M
             limits:
               cpu: "1"
