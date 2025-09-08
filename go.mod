@@ -1,8 +1,6 @@
 module github.com/go-faster/gh-archive-clickhouse
 
-go 1.23.0
-
-toolchain go1.23.3
+go 1.24.0
 
 require (
 	github.com/ClickHouse/ch-go v0.66.1
@@ -19,7 +17,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.38.0
 	go.uber.org/atomic v1.11.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/sync v0.16.0
+	golang.org/x/sync v0.17.0
 )
 
 require (
