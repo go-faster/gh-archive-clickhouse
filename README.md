@@ -13,7 +13,8 @@ CREATE TABLE github_events_raw
     raw String CODEC (ZSTD(16))
 ) ENGINE = ReplacingMergeTree
       PARTITION BY toYYYYMMDD(ts)
-      ORDER BY (ts, id);
+      ORDER BY (ts, id)
+TTL ts + INTERVAL 3 DAY;
 ```
 
 Alternative to [gharchive crawler](https://github.com/igrigorik/gharchive.org/tree/master/crawler) with
